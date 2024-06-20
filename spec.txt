@@ -1,0 +1,26 @@
+Memanfaatkan docker.
+Membangun web (menggunakan laravel, dan ada databasenya)
+
+Pokok berjalan
+
+Harus dibangun dengan Docker compose
+
+Dibangun dengan kontainerisasi
+
+Bisa menggambarkan dimana posisi docker, aplikasi, dan database
+
+Database bisa diakses lewat web (dibangun melalui docker file and compose)
+
+Bagaimana docker bisa diakses lewat hostmain (memerlukan enginex, enginex nya ditaruh didalam atau diluar docker itu dicaritau)
+
+Dibangun didalam virtual machine
+
+Di database perlu dummy data untuk ditampilkan
+
+Luarannya adalah rancangan dan analisa (kenapa dan bagaimana, kalau bisa ip ditambahkan, dan dianalisis)
+
+Bukan tata cara instal, tapi analisa kegunaan tiap"" komponen
+
+Video presentasi
+
+(3 minggu, dl tanggal 22)
