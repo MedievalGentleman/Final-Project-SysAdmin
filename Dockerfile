@@ -4,10 +4,8 @@ WORKDIR /src
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
-COPY . .
-
 FROM php:8.3.8-fpm-alpine3.20
-WORKDIR /app
+WORKDIR /var/www
 
 ARG USER=runner
 ARG GROUP=$USER
@@ -16,12 +14,13 @@ RUN addgroup -g 1000 $USER && \
     adduser -DH -g '' -G $USER -u 1000 $USER && \
     apk add --no-cache dumb-init
 
-RUN docker-php-ext-configure mysqli && \
-    docker-php-ext-install mysqli pdo_mysql
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN install-php-extensions pdo_mysql
 
-COPY --from=builder /src /app
-RUN chown -R $USER:$GROUP /app && \
-    chmod -R 700 /app
+COPY --from=builder /src .
+COPY . .
+RUN chown -R $USER:$GROUP /var/www && \
+    chmod -R 700 /var/www
 
 RUN php artisan config:cache && \
     php artisan event:cache && \
@@ -29,8 +28,9 @@ RUN php artisan config:cache && \
     php artisan view:cache && \
     php artisan optimize
 
-EXPOSE ${PORT}
+WORKDIR /var/www/public
+EXPOSE 9000
 
 USER $USER:$GROUP
 ENTRYPOINT [ "/usr/bin/dumb-init", "--" ]
-CMD [ "php", "artisan", "serve", "--host", "0.0.0.0", "--port", "8080" ]
+CMD [ "php-fpm" ]

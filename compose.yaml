@@ -1,24 +1,23 @@
-networks:
-  net:
-    driver: bridge
+name: finalsysadmin
+
 volumes:
-  db-persistence:
+  dbpersist:
     driver: local
 
 services:
   rizzavel:
-    container_name: rizzavel
-    image: rizzavel:1.0.0
+    build:
+      context: .
+      args:
+        USER: runner
     restart: unless-stopped
-    ports: ["8080:8080"]
     depends_on:
-      database:
+      mariadb:
         condition: service_healthy
-  database:
-    container_name: database
+  mariadb:
     image: mariadb:11.3.2-jammy
     restart: unless-stopped
-    volumes: [db-persistence:/var/lib/mysql]
+    volumes: [dbpersist:/var/lib/mysql]
     env_file: [.env]
     environment:
       - MARIADB_DATABASE=${DB_DATABASE}
@@ -36,15 +35,18 @@ services:
       retries: 5
       start_period: 30s
   phpmyadmin:
-    container_name: phpmyadmin
     image: phpmyadmin:5.2.1-apache
     restart: unless-stopped
-    ports: ["3000:80"]
-    depends_on: [database]
+    depends_on: [mariadb]
     env_file: [.env]
     environment:
-      - PMA_HOST=database
+      - PMA_HOST=mariadb
       - PMA_PORT=3306
       - PMA_USER=${DB_USERNAME}
       - PMA_PASSWORD=${DB_PASSWORD}
-
+  nginx:
+    image: nginx:1.27.0-alpine3.19
+    restart: unless-stopped
+    ports: ["80:80"]
+    depends_on: [rizzavel]
+    volumes: [./nginx.conf:/etc/nginx/conf.d/default.conf:ro]

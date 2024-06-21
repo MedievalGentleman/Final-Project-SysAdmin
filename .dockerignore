@@ -1,1 +1,14 @@
+.git
+.editorconfig
+.env.example
+.envrc
+.gitattributes
+.gitignore
+compose.yaml
+flake.lock
+flake.nix
+phpunit.xml
+README.md
+spec.txt
+
 vendor
