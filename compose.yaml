@@ -39,6 +39,7 @@ services:
     restart: unless-stopped
     depends_on: [mariadb]
     env_file: [.env]
+    ports: ["8080:80"]
     environment:
       - PMA_HOST=mariadb
       - PMA_PORT=3306
