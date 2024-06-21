@@ -9,7 +9,7 @@ services:
     build:
       context: .
       args:
-        USER: runner
+        USER: www
     restart: unless-stopped
     depends_on:
       mariadb:
@@ -29,7 +29,7 @@ services:
           "healthcheck.sh",
           "--su-mysql",
           "--connect",
-          "--innodb_initialized"
+          "--innodb_initialized",
         ]
       interval: 3s
       retries: 5
